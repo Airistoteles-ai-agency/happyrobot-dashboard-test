@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HappyRobot Logistics | Dashboard</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navegacion principal">
+        <button class="brand brand-button" type="button" data-page="analitica">
+          <img src="./MATERIALES/FOTOS/LOGO/HappyRobot.webp" alt="HappyRobot Logistics" />
+        </button>
+
+        <nav class="nav" id="mainNav">
+          <button class="nav-item" type="button" data-page="analitica">
+            <span class="icon">▣</span>
+            Operaciones
+          </button>
+          <button class="nav-item" type="button" data-page="llamadas"><span class="icon">☎</span>Llamadas</button>
+          <button class="nav-item" type="button" data-page="contactos"><span class="icon">☏</span>Lead</button>
+          <button class="nav-item" type="button" data-page="cargadores"><span class="icon">▤</span>Cargas</button>
+          <button class="nav-item" type="button" data-page="transportistas"><span class="icon">▰</span>Transportistas</button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button class="profile" type="button">
+            <span class="avatar">MC</span>
+            <span>
+              <strong>Maria Correa</strong>
+              <small>Gerente de Operaciones</small>
+            </span>
+            <span class="chevron">⌄</span>
+          </button>
+          <button class="help" type="button">
+            <span class="icon">?</span>
+            Centro de ayuda
+            <span class="external">↗</span>
+          </button>
+        </div>
+      </aside>
+
+      <main class="workspace" id="pageContent"></main>
+    </div>
+
+    <div class="modal-backdrop" id="audioModal" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="audioModalTitle">
+        <button class="modal-close" type="button" id="closeAudioModal" aria-label="Cerrar">×</button>
+        <h2 id="audioModalTitle">Reproduccion de audio</h2>
+        <p>Para esta demo de Sergio Passalacqua, no esta disponible la reproduccion de audio.</p>
+        <button class="export-button modal-action" type="button" id="acceptAudioModal">Entendido</button>
+      </div>
+    </div>
+
+    <div class="modal-backdrop" id="transcriptModal" aria-hidden="true">
+      <div class="modal transcript-modal" role="dialog" aria-modal="true" aria-labelledby="transcriptModalTitle">
+        <button class="modal-close" type="button" id="closeTranscriptModal" aria-label="Cerrar">×</button>
+        <h2 id="transcriptModalTitle">Transcripcion de llamada</h2>
+        <div class="transcript-meta" id="transcriptMeta"></div>
+        <div class="transcript-summary-card" id="transcriptSummary"></div>
+        <div class="transcript-body" id="transcriptBody"></div>
+      </div>
+    </div>
+
+    <div class="modal-backdrop" id="detailModal" aria-hidden="true">
+      <div class="modal detail-modal" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
+        <button class="modal-close" type="button" id="closeDetailModal" aria-label="Cerrar">×</button>
+        <h2 id="detailModalTitle">Detalle</h2>
+        <div id="detailModalBody"></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
