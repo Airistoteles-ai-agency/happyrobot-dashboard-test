@@ -154,6 +154,10 @@ const state = {
     carriersStatus: "all",
     carriersOtp: "all",
     carriersRate: "all",
+    intelResult: "all",
+    intelAgent: "all",
+    intelClient: "all",
+    intelFocus: "all",
   },
   shipperSegment: null,
   shipperSegmentPinned: false,
@@ -184,6 +188,7 @@ const pageMeta = {
   contactos: ["Lead", "Gestiona y da seguimiento a tus leads y oportunidades."],
   cargadores: ["Cargas", "Gestiona y analiza tu base de cargas y su estado operativo."],
   transportistas: ["Transportistas", "Gestiona y valida tu red de transportistas."],
+  intelligence: ["Intelligence", "Insights ejecutivos para seniors: pricing, clientes, riesgo y siguiente mejor accion."],
 };
 
 function el(selector) {
@@ -275,7 +280,6 @@ function topbar(extra = "") {
         ${extra}
         <span>Actualizado: hace 5 min</span>
         <button class="icon-button" type="button" data-action="refresh" aria-label="Actualizar datos">↻</button>
-        <button class="export-button" type="button" data-action="export"><span>⇩</span>Exportar</button>
       </div>
     </header>`;
 }
@@ -341,7 +345,6 @@ function queuePanel() {
             </article>`
         )
         .join("")}</div>
-      <button class="queue-more" type="button" data-action="toast">Ver toda la cola <span>→</span></button>
     </aside>`;
 }
 
@@ -519,7 +522,6 @@ function resultsPanel(rows = sourceData.Llamadas) {
         <div class="donut-wrap"><canvas id="donutChart"></canvas><div class="donut-center"><strong>${fmt(centerValue)}</strong><span>${centerLabel}</span></div></div>
         <div class="legend compact-legend" id="resultLegend">${resultLegend(donutData, total)}</div>
       </div>
-      <button class="text-link" type="button" data-action="toast">Ver detalle <span>→</span></button>
     </article>`;
 }
 
@@ -527,15 +529,15 @@ function renderAnalitica() {
   const calls = filteredAnalyticsCalls();
   el("#pageContent").innerHTML = `
     ${topbar()}
-    <section class="filters filters-rich">
+    ${analyticsCards()}
+    ${operationalMetrics(calls)}
+    <section class="filters filters-rich filters-in-flow">
       ${filterSelect("Metrica", "analyticsMetric", [["llamadas_realizadas", "Llamadas por dia"], ["contactos_conectados", "Leads conectados"], ["confirmaciones", "Confirmaciones por dia"]])}
       ${filterSelect("Resultado", "analyticsResult", [["all", "Todos"], ...uniqueOptions(sourceData.Llamadas, "resultado").map((x) => [x, x])])}
       ${filterSelect("Agente", "analyticsAgent", [["all", "Todos"], ...uniqueOptions(sourceData.Llamadas, "agente").map((x) => [x, x])])}
       ${filterSearch("Buscar transportista o telefono")}
       <button class="filter-button" type="button" data-action="clearFilters">Limpiar</button>
     </section>
-    ${analyticsCards()}
-    ${operationalMetrics(calls)}
     <section class="page-grid with-queue">
       <div class="content-column">
         <section class="chart-row">
@@ -545,10 +547,7 @@ function renderAnalitica() {
           </article>
           ${resultsPanel(calls)}
         </section>
-        <section class="tables-row">
-          <article class="panel"><div class="panel-header"><h2>Ultimas llamadas</h2><button class="text-link" type="button" data-page="llamadas">Ver todas <span>→</span></button></div>${callsTable(calls, 5)}</article>
-          <article class="panel"><div class="panel-header"><h2>Eventos de llamada</h2><button class="text-link" type="button" data-action="toast">Ver todos <span>→</span></button></div>${eventsTable()}</article>
-        </section>
+        <article class="panel"><div class="panel-header"><h2>Ultimas llamadas</h2><button class="text-link" type="button" data-page="llamadas">Ver todas <span>→</span></button></div>${callsTable(calls, 5)}</article>
       </div>
       ${queuePanel()}
     </section>`;
@@ -595,11 +594,11 @@ function renderLlamadas() {
         ${resultsPanel(rows)}
       </aside>
     </section>`;
-  drawDonut(resultsFromCalls(), "donutChart");
+  drawDonut(resultsFromCalls(rows), "donutChart");
 }
 
 function followUps() {
-  return `<div class="mini-list">${sourceData.Llamadas.slice(0, 5).map((c) => `<div class="mini-row follow-up-row"><span>${shortDate(c.fecha_hora).split(", ")[1] || "Hoy"}</span><div class="follow-up-info"><strong>${c.transportista}</strong><small>${c.agente}</small></div><button class="play-button" type="button" data-action="audio" aria-label="Llamar a ${c.transportista}">☎</button></div>`).join("")}</div>`;
+  return `<div class="mini-list">${sourceData.Llamadas.slice(0, 5).map((c) => `<div class="mini-row follow-up-row"><span>${shortDate(c.fecha_hora).split(", ")[1] || "Hoy"}</span><div class="follow-up-info"><strong>${c.transportista}</strong><small>${c.agente}</small></div><button class="play-button" type="button" data-action="leadInfo" data-call="${sourceData.Llamadas.indexOf(c)}" aria-label="Ver informacion de ${c.transportista}">☎</button></div>`).join("")}</div>`;
 }
 
 function renderContactos() {
@@ -609,7 +608,7 @@ function renderContactos() {
     ${topbar()}
     ${kpiCards([
       { icon: "♙", color: "blue", label: "Leads totales", value: sourceData.Contactos.length, change: "—", ref: "click para ver todos", action: "contactSegment", status: "all", active: state.filters.contactsStatus === "all" },
-      { icon: "+", color: "orange", label: "Nuevos", value: counts.Nuevo || 0, change: "+50%", ref: "click para filtrar", action: "contactSegment", status: "Nuevo", active: state.filters.contactsStatus === "Nuevo" },
+      { icon: "+", color: "purple", label: "Nuevos", value: counts.Nuevo || 0, change: "+50%", ref: "click para filtrar", action: "contactSegment", status: "Nuevo", active: state.filters.contactsStatus === "Nuevo" },
       { icon: "◷", color: "green", label: "En seguimiento", value: counts["En seguimiento"] || 0, change: "+33%", ref: "click para filtrar", action: "contactSegment", status: "En seguimiento", active: state.filters.contactsStatus === "En seguimiento" },
       { icon: "★", color: "orange", label: "Calificados", value: counts.Calificado || 0, change: "+100%", ref: "click para filtrar", action: "contactSegment", status: "Calificado", active: state.filters.contactsStatus === "Calificado" },
     ])}
@@ -713,6 +712,116 @@ function renderTransportistas() {
   drawLineChart(sourceData.Transportistas.map((c) => ({ label: c.transportista.split(" ")[0], value: c.otp_validado_pct })), "otpChart", 100);
 }
 
+function syntheticRate(call) {
+  const index = sourceData.Llamadas.indexOf(call);
+  if (call.resultado === "Aceptado" || call.resultado === "Handoff") return 1000 + (index % 3) * 50;
+  if (call.resultado === "Contraoferta") return [950, 1000, 1050][index % 3];
+  if (call.resultado === "Rechazado") return 1250;
+  return 1100;
+}
+
+function modeValue(values) {
+  const counts = values.reduce((acc, value) => {
+    acc[value] = (acc[value] || 0) + 1;
+    return acc;
+  }, {});
+  return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || 0;
+}
+
+function intelligenceCard(label, value, insight, action, tone = "blue") {
+  return `
+    <article class="intel-card ${tone}" tabindex="0">
+      <span>${label}</span>
+      <strong>${value}</strong>
+      <p>${insight}</p>
+      <div class="intel-hover"><b>Siguiente accion</b>${action}</div>
+    </article>`;
+}
+
+function filteredIntelligenceCalls() {
+  const q = state.query.trim().toLowerCase();
+  return sourceData.Llamadas.filter((call) => {
+    const matchesQuery = !q || [call.transportista, call.telefono, call.agente, call.resultado].some((value) => String(value).toLowerCase().includes(q));
+    const matchesResult = state.filters.intelResult === "all" || call.resultado === state.filters.intelResult;
+    const matchesAgent = state.filters.intelAgent === "all" || call.agente === state.filters.intelAgent;
+    const matchesFocus =
+      state.filters.intelFocus === "all" ||
+      (state.filters.intelFocus === "pricing" && ["Aceptado", "Contraoferta", "Handoff"].includes(call.resultado)) ||
+      (state.filters.intelFocus === "risk" && ["Fallo OTP", "Rechazado", "Pendiente"].includes(call.resultado)) ||
+      (state.filters.intelFocus === "opportunity" && ["Pendiente", "Contraoferta"].includes(call.resultado));
+    return matchesQuery && matchesResult && matchesAgent && matchesFocus;
+  });
+}
+
+function filteredIntelligenceClients() {
+  const q = state.query.trim().toLowerCase();
+  return sourceData.Cargadores.filter((client) => {
+    const matchesQuery = !q || [client.cargador, client.ciudad_origen, client.estado].some((value) => String(value).toLowerCase().includes(q));
+    const matchesClient = state.filters.intelClient === "all" || client.cargador === state.filters.intelClient;
+    const matchesFocus =
+      state.filters.intelFocus === "all" ||
+      state.filters.intelFocus === "pricing" ||
+      (state.filters.intelFocus === "risk" && (client.score_relacion < 80 || client.estado === "Cancelada")) ||
+      (state.filters.intelFocus === "opportunity" && client.estado !== "Cancelada");
+    return matchesQuery && matchesClient && matchesFocus;
+  });
+}
+
+function renderIntelligence() {
+  const calls = filteredIntelligenceCalls();
+  const clients = filteredIntelligenceClients();
+  const closedCalls = calls.filter((call) => ["Aceptado", "Handoff"].includes(call.resultado));
+  const counterCalls = calls.filter((call) => call.resultado === "Contraoferta");
+  const acceptedAvg = closedCalls.length ? Math.round(closedCalls.reduce((sum, call) => sum + syntheticRate(call), 0) / closedCalls.length) : 0;
+  const repeatedCounter = Number(modeValue(counterCalls.map(syntheticRate)));
+  const bestClient = [...clients].sort((a, b) => b.volumen_mensual_cargas * b.score_relacion - a.volumen_mensual_cargas * a.score_relacion)[0] || sourceData.Cargadores[0];
+  const worstClient = [...clients].sort((a, b) => a.score_relacion - b.score_relacion || a.volumen_mensual_cargas - b.volumen_mensual_cargas)[0] || sourceData.Cargadores[0];
+  const otpFails = calls.filter((call) => call.resultado === "Fallo OTP").length;
+  const pendingValue = calls.filter((call) => ["Pendiente", "Contraoferta"].includes(call.resultado)).length * (repeatedCounter || 1000);
+  const agentRows = Object.entries(countBy(calls, "agente"))
+    .map(([agent, count]) => {
+      const rows = calls.filter((call) => call.agente === agent);
+      const closed = rows.filter((call) => ["Aceptado", "Handoff"].includes(call.resultado)).length;
+      return { agent, count, closed, rate: count ? closed / count : 0 };
+    })
+    .sort((a, b) => b.rate - a.rate || b.closed - a.closed);
+
+  el("#pageContent").innerHTML = `
+    ${topbar()}
+    <section class="filters filters-rich intel-filters">
+      ${filterSearch("Buscar cliente, transportista o agente")}
+      ${filterSelect("Resultado", "intelResult", [["all", "Todos"], ...uniqueOptions(sourceData.Llamadas, "resultado").map((x) => [x, x])])}
+      ${filterSelect("Agente", "intelAgent", [["all", "Todos"], ...uniqueOptions(sourceData.Llamadas, "agente").map((x) => [x, x])])}
+      ${filterSelect("Cliente", "intelClient", [["all", "Todos"], ...uniqueOptions(sourceData.Cargadores, "cargador").map((x) => [x, x])])}
+      ${filterSelect("Foco", "intelFocus", [["all", "Todo"], ["pricing", "Pricing"], ["risk", "Riesgo"], ["opportunity", "Oportunidad"]])}
+      <button class="filter-button" type="button" data-action="clearFilters">Limpiar</button>
+    </section>
+    <div class="intel-scope"><span>${calls.length} llamadas</span><span>${clients.length} clientes</span><span>Foco: ${state.filters.intelFocus === "all" ? "todo" : state.filters.intelFocus}</span></div>
+    <section class="intel-grid">
+      ${intelligenceCard("Precio aceptado medio", `${fmt(acceptedAvg)} EUR`, "Referencia realista de cierre para lanes similares.", "Usar este precio como ancla inicial y permitir margen hasta 1.050 EUR si hay urgencia.", "green")}
+      ${intelligenceCard("Contraoferta mas repetida", `${fmt(repeatedCounter)} EUR`, `${counterCalls.length} contraofertas convergen alrededor de este punto.`, "Preparar aprobacion rapida para ofertas en la banda 950-1.050 EUR.", "blue")}
+      ${intelligenceCard("Mejor cliente", bestClient.cargador, `${fmt(bestClient.volumen_mensual_cargas)} cargas/mes · score ${bestClient.score_relacion}.`, "Priorizar cobertura y crear playbook dedicado para sus lanes.", "purple")}
+      ${intelligenceCard("Cliente con riesgo", worstClient.cargador, `Score ${worstClient.score_relacion} y estado ${worstClient.estado.toLowerCase()}.`, "Revisar motivo operativo, precio y calidad de handoff antes de seguir escalando.", "red")}
+      ${intelligenceCard("Revenue recuperable", `${fmt(pendingValue)} EUR`, "Valor estimado en pendientes + contraofertas abiertas.", "Atacar primero llamadas con contraoferta y duracion superior a 2 minutos.", "orange")}
+      ${intelligenceCard("Riesgo OTP", `${otpFails} bloqueos`, "Friccion de verificacion que impide llegar a pricing.", "Enviar segundo canal OTP por defecto cuando SMS falle o tarde mas de 60s.", "red")}
+    </section>
+    <section class="intel-layout">
+      <article class="panel">
+        <div class="panel-header"><h2>Ranking senior de agentes</h2></div>
+        <div class="intel-ranking">${agentRows.length ? agentRows.map((row, index) => `<div><span>${index + 1}</span><strong>${row.agent}</strong><i><b style="width:${Math.round(row.rate * 100)}%"></b></i><em>${Math.round(row.rate * 100)}% cierre</em></div>`).join("") : `<p class="empty-state">Sin llamadas para los filtros actuales.</p>`}</div>
+      </article>
+      <article class="panel">
+        <div class="panel-header"><h2>Playbook recomendado</h2></div>
+        <div class="intel-playbook">
+          <button type="button" data-action="toast"><strong>Pricing</strong><span>Aprobar automaticamente contraofertas entre 950 y 1.050 EUR para lanes con score alto.</span></button>
+          <button type="button" data-action="toast"><strong>Clientes</strong><span>Blindar ${bestClient.cargador} con seguimiento senior diario y alerta si cae el score.</span></button>
+          <button type="button" data-action="toast"><strong>Riesgo</strong><span>Reintentar OTP por email si SMS falla y no esperar al siguiente contacto.</span></button>
+          <button type="button" data-action="toast"><strong>Operaciones</strong><span>Priorizar llamadas con estado Pendiente antes de nuevas prospecciones.</span></button>
+        </div>
+      </article>
+    </section>`;
+}
+
 function filtered(rows, keys) {
   const q = state.query.trim().toLowerCase();
   let out = rows;
@@ -775,7 +884,7 @@ function countBy(rows, key) {
 
 function segmentList(counts, total) {
   const reset = state.filters.contactsStatus !== "all" ? `<button class="segment-reset" type="button" data-action="contactSegment" data-status="all">Todos los segmentos</button>` : "";
-  return `<div class="segments">${reset}${Object.entries(counts).map(([label, value]) => `<button class="${state.filters.contactsStatus === label ? "active" : ""}" type="button" data-action="contactSegment" data-status="${label}" aria-pressed="${state.filters.contactsStatus === label}"><span class="kpi-icon">${label[0]}</span><strong>${label}<b>${value}</b></strong><small>${Math.round((value / total) * 100)}% del total</small><i>›</i></button>`).join("")}</div>`;
+  return `<div class="segments">${reset}${Object.entries(counts).map(([label, value]) => `<button class="${state.filters.contactsStatus === label ? "active" : ""}" type="button" data-action="contactSegment" data-status="${label}" aria-pressed="${state.filters.contactsStatus === label}"><span class="segment-label ${slug(label)}">${label}</span><strong>${value}</strong><small>${Math.round((value / total) * 100)}% del total</small><i>›</i></button>`).join("")}</div>`;
 }
 
 function activityList() {
@@ -870,6 +979,27 @@ function updateResultSegment(segment) {
   drawDonut(data, "donutChart");
 }
 
+function showDonutTooltip(item, event, total) {
+  let tooltip = el("#donutTooltip");
+  if (!tooltip) {
+    tooltip = document.createElement("div");
+    tooltip.id = "donutTooltip";
+    tooltip.className = "chart-tooltip";
+    document.body.appendChild(tooltip);
+  }
+  const pctValue = total ? Math.round((item.value / total) * 100) : 0;
+  tooltip.innerHTML = `<strong>${item.label}</strong><span>${item.value} llamadas · ${pctValue}% del total</span><small>${callSummaries[item.label] || "Resultado operativo registrado."}</small>`;
+  tooltip.classList.add("show");
+  const x = Math.min(window.innerWidth - 260, event.clientX + 16);
+  const y = Math.min(window.innerHeight - 120, event.clientY + 16);
+  tooltip.style.left = `${Math.max(12, x)}px`;
+  tooltip.style.top = `${Math.max(12, y)}px`;
+}
+
+function hideDonutTooltip() {
+  el("#donutTooltip")?.classList.remove("show");
+}
+
 function drawLineChart(data, id, fixedMax) {
   const canvas = el(`#${id}`);
   if (!canvas) return;
@@ -935,8 +1065,7 @@ function drawDonut(allData, id) {
   canvas.height = Math.max(rect.height, 1) * dpr;
   ctx.scale(dpr, dpr);
   const selected = allData.some((item) => item.label === state.resultSegment) ? state.resultSegment : null;
-  const data = selected ? allData.filter((item) => item.label === selected) : allData;
-  const total = data.reduce((sum, item) => sum + item.value, 0);
+  const data = allData;
   const fullTotal = allData.reduce((sum, item) => sum + item.value, 0);
   if (!fullTotal) {
     ctx.clearRect(0, 0, rect.width, rect.height);
@@ -948,16 +1077,16 @@ function drawDonut(allData, id) {
   let start = -Math.PI / 2;
   ctx.clearRect(0, 0, rect.width, rect.height);
   data.forEach((item) => {
-    const angle = selected ? Math.PI * 2 : (item.value / total) * Math.PI * 2;
+    const angle = (item.value / fullTotal) * Math.PI * 2;
     const end = start + angle;
     ctx.beginPath();
     ctx.moveTo(center.x, center.y);
     ctx.arc(center.x, center.y, radius, start, end);
     ctx.closePath();
-    ctx.fillStyle = item.color;
+    ctx.fillStyle = selected && item.label !== selected ? "#d8dee8" : item.color;
     ctx.fill();
     ctx.strokeStyle = "#fff";
-    ctx.lineWidth = 3;
+    ctx.lineWidth = selected && item.label === selected ? 5 : 3;
     ctx.stroke();
     arcs.push({ ...item, start, end });
     start = end;
@@ -974,11 +1103,14 @@ function drawDonut(allData, id) {
     if (hit && hit.label !== state.resultSegment) {
       updateResultSegment(hit.label);
     }
+    if (hit) showDonutTooltip(hit, event, fullTotal);
+    if (!hit) hideDonutTooltip();
   };
   canvas.onmouseleave = () => {
     if (!state.resultSegmentPinned && state.resultSegment) {
       updateResultSegment(null);
     }
+    hideDonutTooltip();
   };
   canvas.onclick = (event) => {
     const hit = donutHit(event, canvas, center, radius, arcs);
@@ -986,6 +1118,7 @@ function drawDonut(allData, id) {
     state.resultSegment = state.resultSegment === hit.label && state.resultSegmentPinned ? null : hit.label;
     state.resultSegmentPinned = Boolean(state.resultSegment);
     rerenderCurrent();
+    showDonutTooltip(hit, event, fullTotal);
   };
   canvas.title = selected ? `${selected} · ${data[0]?.value || 0} de ${fullTotal}` : "Pasa el cursor sobre un resultado";
 }
@@ -1070,14 +1203,14 @@ function donutHit(event, canvas, center, radius, arcs) {
 
 function render() {
   state.query = "";
-  const renderers = { analitica: renderAnalitica, llamadas: renderLlamadas, contactos: renderContactos, cargadores: renderCargadores, transportistas: renderTransportistas };
+  const renderers = { analitica: renderAnalitica, llamadas: renderLlamadas, contactos: renderContactos, cargadores: renderCargadores, transportistas: renderTransportistas, intelligence: renderIntelligence };
   if (!renderers[state.page]) state.page = "analitica";
   renderers[state.page]();
   updateNav();
 }
 
 function rerenderCurrent() {
-  const renderers = { analitica: renderAnalitica, llamadas: renderLlamadas, contactos: renderContactos, cargadores: renderCargadores, transportistas: renderTransportistas };
+  const renderers = { analitica: renderAnalitica, llamadas: renderLlamadas, contactos: renderContactos, cargadores: renderCargadores, transportistas: renderTransportistas, intelligence: renderIntelligence };
   if (!renderers[state.page]) state.page = "analitica";
   renderers[state.page]();
   updateNav();
@@ -1262,6 +1395,24 @@ function detailField(label, value) {
   return `<div class="detail-field"><span>${label}</span><strong>${value ?? "—"}</strong></div>`;
 }
 
+function openLeadInfoModal(index) {
+  const call = sourceData.Llamadas[Number(index)] || sourceData.Llamadas[0];
+  const isUrgent = ["Pendiente", "Contraoferta", "Fallo OTP"].includes(call.resultado);
+  el("#detailModalTitle").textContent = `Lead de seguimiento · ${call.transportista}`;
+  el("#detailModalBody").innerHTML = `
+    <div class="detail-grid">
+      ${detailField("Telefono", call.telefono)}
+      ${detailField("Agente asignado", call.agente)}
+      ${detailField("Resultado", `<span class="badge ${slug(call.resultado)}">${call.resultado}</span>`)}
+      ${detailField("Prioridad", isUrgent ? "Alta" : "Media")}
+      ${detailField("Ultima llamada", shortDate(call.fecha_hora))}
+      ${detailField("Duracion", mmss(call.duracion_seg))}
+    </div>
+    <div class="detail-note"><span>Siguiente accion</span><p>${isUrgent ? "Contactar hoy y resolver el bloqueo antes de perder la oportunidad." : "Mantener en seguimiento y confirmar disponibilidad para la siguiente carga compatible."}</p></div>`;
+  el("#detailModal").classList.add("show");
+  el("#detailModal").setAttribute("aria-hidden", "false");
+}
+
 function openDetailModal(type, id) {
   const index = Number(id);
   let title = "Detalle";
@@ -1378,6 +1529,7 @@ function clearPageFilters() {
     contactos: { contactsStatus: "all", contactsOwner: "all" },
     cargadores: { shippersStatus: "all", shippersCity: "all", shippersScore: "all" },
     transportistas: { carriersStatus: "all", carriersOtp: "all", carriersRate: "all" },
+    intelligence: { intelResult: "all", intelAgent: "all", intelClient: "all", intelFocus: "all" },
   };
   Object.assign(state.filters, groups[state.page] || {});
 }
@@ -1396,6 +1548,10 @@ document.addEventListener("click", (event) => {
   }
   if (action?.dataset.action === "transcript") {
     openTranscriptModal(action.dataset.call);
+    return;
+  }
+  if (action?.dataset.action === "leadInfo") {
+    openLeadInfoModal(action.dataset.call);
     return;
   }
   if (action?.dataset.action === "refresh") {
@@ -1422,6 +1578,7 @@ document.addEventListener("click", (event) => {
     state.resultSegment = action.dataset.result || null;
     state.resultSegmentPinned = Boolean(action.dataset.result);
     state.resultHoverSuspended = !state.resultSegment;
+    if (!state.resultSegment) hideDonutTooltip();
     rerenderCurrent();
     return;
   }
@@ -1487,6 +1644,9 @@ document.addEventListener("mouseover", (event) => {
   const nextResult = chip.dataset.result || null;
   if (state.resultSegment === nextResult) return;
   updateResultSegment(nextResult);
+  const data = resultsFromCalls(currentResultRows());
+  const item = data.find((entry) => entry.label === nextResult);
+  if (item) showDonutTooltip(item, event, data.reduce((sum, entry) => sum + entry.value, 0));
 });
 
 document.addEventListener("mouseout", (event) => {
@@ -1499,6 +1659,7 @@ document.addEventListener("mouseout", (event) => {
   }
   if (event.relatedTarget && chip.contains(event.relatedTarget)) return;
   updateResultSegment(null);
+  hideDonutTooltip();
 });
 
 el("#closeAudioModal").addEventListener("click", closeAudioModal);
