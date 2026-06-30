@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,20 +9,25 @@
   </head>
   <body>
     <div class="app-shell">
-      <aside class="sidebar" aria-label="Navegacion principal">
+      <aside class="sidebar" aria-label="Main navigation">
         <button class="brand brand-button" type="button" data-page="analitica">
           <img src="./HappyRobot.webp" alt="HappyRobot Logistics" />
         </button>
 
+        <div class="language-switcher" aria-label="Language selector">
+          <button class="active" type="button" data-action="language" data-language="en" aria-pressed="true" aria-label="Switch to English">EN</button>
+          <button type="button" data-action="language" data-language="es" aria-pressed="false" aria-label="Cambiar a español">ES</button>
+        </div>
+
         <nav class="nav" id="mainNav">
           <button class="nav-item" type="button" data-page="analitica">
             <span class="icon">▣</span>
-            Operaciones
+            Operations
           </button>
-          <button class="nav-item" type="button" data-page="llamadas"><span class="icon">☎</span>Llamadas</button>
+          <button class="nav-item" type="button" data-page="llamadas"><span class="icon">☎</span>Calls</button>
           <button class="nav-item" type="button" data-page="contactos"><span class="icon">☏</span>Lead</button>
-          <button class="nav-item" type="button" data-page="cargadores"><span class="icon">▤</span>Cargas</button>
-          <button class="nav-item" type="button" data-page="transportistas"><span class="icon">▰</span>Transportistas</button>
+          <button class="nav-item" type="button" data-page="cargadores"><span class="icon">▤</span>Loads</button>
+          <button class="nav-item" type="button" data-page="transportistas"><span class="icon">▰</span>Carriers</button>
           <button class="nav-item" type="button" data-page="intelligence"><span class="icon">✦</span>Intelligence</button>
         </nav>
 
@@ -31,7 +36,7 @@
             <span class="avatar">MC</span>
             <span>
               <strong>Maria Correa</strong>
-              <small>Gerente de Operaciones</small>
+              <small>Operations Manager</small>
             </span>
           </button>
         </div>
@@ -42,17 +47,17 @@
 
     <div class="modal-backdrop" id="audioModal" aria-hidden="true">
       <div class="modal" role="dialog" aria-modal="true" aria-labelledby="audioModalTitle">
-        <button class="modal-close" type="button" id="closeAudioModal" aria-label="Cerrar">×</button>
-        <h2 id="audioModalTitle">Reproduccion de audio</h2>
-        <p>Para esta demo de Sergio Passalacqua, no esta disponible la reproduccion de audio.</p>
-        <button class="export-button modal-action" type="button" id="acceptAudioModal">Entendido</button>
+        <button class="modal-close" type="button" id="closeAudioModal" aria-label="Close">×</button>
+        <h2 id="audioModalTitle">Audio playback</h2>
+        <p>Audio playback is not available for this Sergio Passalacqua demo.</p>
+        <button class="export-button modal-action" type="button" id="acceptAudioModal">Got it</button>
       </div>
     </div>
 
     <div class="modal-backdrop" id="transcriptModal" aria-hidden="true">
       <div class="modal transcript-modal" role="dialog" aria-modal="true" aria-labelledby="transcriptModalTitle">
-        <button class="modal-close" type="button" id="closeTranscriptModal" aria-label="Cerrar">×</button>
-        <h2 id="transcriptModalTitle">Transcripcion de llamada</h2>
+        <button class="modal-close" type="button" id="closeTranscriptModal" aria-label="Close">×</button>
+        <h2 id="transcriptModalTitle">Call transcript</h2>
         <div class="transcript-meta" id="transcriptMeta"></div>
         <div class="transcript-summary-card" id="transcriptSummary"></div>
         <div class="transcript-body" id="transcriptBody"></div>
@@ -61,8 +66,8 @@
 
     <div class="modal-backdrop" id="detailModal" aria-hidden="true">
       <div class="modal detail-modal" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
-        <button class="modal-close" type="button" id="closeDetailModal" aria-label="Cerrar">×</button>
-        <h2 id="detailModalTitle">Detalle</h2>
+        <button class="modal-close" type="button" id="closeDetailModal" aria-label="Close">×</button>
+        <h2 id="detailModalTitle">Details</h2>
         <div id="detailModalBody"></div>
       </div>
     </div>

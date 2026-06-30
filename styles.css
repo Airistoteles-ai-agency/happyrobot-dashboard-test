@@ -146,10 +146,31 @@ button {
   padding: 0 4px;
 }
 
+.language-switcher {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin: -10px 4px 2px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.language-switcher button {
+  min-height: 34px;
+  border-radius: 6px;
+  color: #475467;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
 .nav-item,
 .subnav button,
 .help,
 .profile,
+.language-switcher button,
 .icon-button,
 .export-button,
 .filter-button,
@@ -158,6 +179,20 @@ button {
   border: 0;
   background: transparent;
   color: inherit;
+}
+
+.language-switcher button {
+  color: #475467;
+  background: transparent;
+}
+
+.language-switcher button:hover {
+  background: #f2f4f7;
+}
+
+.language-switcher button.active {
+  color: #fff;
+  background: #111827;
 }
 
 .nav-item {

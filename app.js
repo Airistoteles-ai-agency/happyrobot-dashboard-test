@@ -137,6 +137,7 @@ sourceData.Llamadas.forEach((call, index) => {
 });
 
 const state = {
+  language: "en",
   page: "analitica",
   query: "",
   filters: {
@@ -191,6 +192,427 @@ const pageMeta = {
   intelligence: ["Intelligence", "Insights ejecutivos para seniors: pricing, clientes, riesgo y siguiente mejor accion."],
 };
 
+const exactEnglish = new Map([
+  ["Operaciones", "Operations"],
+  ["Llamadas", "Calls"],
+  ["Cargas", "Loads"],
+  ["Transportistas", "Carriers"],
+  ["Gerente de Operaciones", "Operations Manager"],
+  ["Analitica de operaciones", "Operations analytics"],
+  ["Vista general del rendimiento de llamadas y resultados.", "Overview of call performance and outcomes."],
+  ["Gestiona y da seguimiento a todas tus llamadas.", "Manage and follow up on all your calls."],
+  ["Gestiona y da seguimiento a tus leads y oportunidades.", "Manage and follow up on your leads and opportunities."],
+  ["Gestiona y analiza tu base de cargas y su estado operativo.", "Manage and analyze your load base and operating status."],
+  ["Gestiona y valida tu red de transportistas.", "Manage and validate your carrier network."],
+  ["Insights ejecutivos para seniors: pricing, clientes, riesgo y siguiente mejor accion.", "Executive insights for senior teams: pricing, clients, risk, and next best action."],
+  ["Actualizado: hace 5 min", "Updated: 5 min ago"],
+  ["Cola de confirmacion", "Confirmation queue"],
+  ["Confirma o rechaza los resultados pendientes para mantener tus datos actualizados.", "Confirm or reject pending outcomes to keep your data up to date."],
+  ["Llamadas realizadas", "Calls made"],
+  ["Contactos conectados", "Connected contacts"],
+  ["Tasa de contacto", "Contact rate"],
+  ["Confirmaciones", "Confirmations"],
+  ["Tasa de confirmación", "Confirmation rate"],
+  ["Cola de confirmación", "Confirmation queue"],
+  ["vs. semana anterior", "vs. previous week"],
+  ["vs. semana pasada", "vs. last week"],
+  ["vs. mes anterior", "vs. previous month"],
+  ["pendientes", "pending"],
+  ["Metrica", "Metric"],
+  ["Llamadas por dia", "Calls per day"],
+  ["Leads conectados", "Connected leads"],
+  ["Confirmaciones por dia", "Confirmations per day"],
+  ["Resultado", "Result"],
+  ["Agente", "Agent"],
+  ["Duracion", "Duration"],
+  ["Estado", "Status"],
+  ["Ciudad", "City"],
+  ["Score", "Score"],
+  ["Tarifa", "Rate"],
+  ["Cliente", "Client"],
+  ["Foco", "Focus"],
+  ["Todos", "All"],
+  ["Todas", "All"],
+  ["Todo", "All"],
+  ["Limpiar", "Clear"],
+  ["Buscar transportista o telefono", "Search carrier or phone"],
+  ["Buscar transportista, telefono o agente", "Search carrier, phone, or agent"],
+  ["Buscar lead, empresa o email", "Search lead, company, or email"],
+  ["Buscar cargador o ciudad", "Search shipper or city"],
+  ["Buscar transportista o MC", "Search carrier or MC"],
+  ["Buscar cliente, transportista o agente", "Search client, carrier, or agent"],
+  ["Fecha y hora", "Date and time"],
+  ["Transportista", "Carrier"],
+  ["Telefono", "Phone"],
+  ["Transcripcion", "Transcript"],
+  ["Grabacion", "Recording"],
+  ["Ver", "View"],
+  ["Reproducir llamada", "Play call"],
+  ["Resultados de llamadas", "Call results"],
+  ["Ultimas llamadas", "Latest calls"],
+  ["Ver todas", "View all"],
+  ["Metricas operativas detalladas", "Detailed operational metrics"],
+  ["llamadas filtradas", "filtered calls"],
+  ["Pipeline recuperable", "Recoverable pipeline"],
+  ["Oportunidad", "Opportunity"],
+  ["Fuga potencial", "Potential leakage"],
+  ["Riesgo", "Risk"],
+  ["Win-rate negociacion", "Negotiation win rate"],
+  ["Pricing", "Pricing"],
+  ["Velocidad a reserva", "Speed to booking"],
+  ["Eficiencia", "Efficiency"],
+  ["Agente con mas impacto", "Highest-impact agent"],
+  ["Prioridad automatica", "Automatic priority"],
+  ["Cierre operativo", "Operational close"],
+  ["Pendientes", "Pending"],
+  ["Contraofertas", "Counteroffers"],
+  ["Fallo OTP", "OTP failure"],
+  ["Duracion media", "Average duration"],
+  ["Valor reservado", "Booked value"],
+  ["Backlog activo", "Active backlog"],
+  ["Bloqueos", "Blocks"],
+  ["Funnel operativo", "Operational funnel"],
+  ["Por agente", "By agent"],
+  ["Acciones inmediatas", "Immediate actions"],
+  ["Seguimientos de hoy", "Today's follow-ups"],
+  ["Historial de llamadas", "Call history"],
+  ["Total de llamadas", "Total calls"],
+  ["Promedio duracion", "Average duration"],
+  ["Aceptadas", "Accepted"],
+  ["Leads totales", "Total leads"],
+  ["Nuevos", "New"],
+  ["En seguimiento", "In follow-up"],
+  ["Calificados", "Qualified"],
+  ["Todos los leads", "All leads"],
+  ["Empresa", "Company"],
+  ["Ultimo contacto", "Last contact"],
+  ["Owner", "Owner"],
+  ["Segmentos", "Segments"],
+  ["Actividad reciente", "Recent activity"],
+  ["Cargas aceptadas", "Accepted loads"],
+  ["Cargas pendientes", "Pending loads"],
+  ["Cargas canceladas", "Canceled loads"],
+  ["Volumen mensual", "Monthly volume"],
+  ["Cuenta", "Account"],
+  ["Ciudad origen", "Origin city"],
+  ["Volumen mensual de cargas", "Monthly load volume"],
+  ["Score de relacion", "Relationship score"],
+  ["Top cargas", "Top loads"],
+  ["Concentracion por ciudad origen", "Concentration by origin city"],
+  ["Transportistas activos", "Active carriers"],
+  ["En revision", "Under review"],
+  ["MC verificados", "Verified MCs"],
+  ["Cargas cerradas", "Closed loads"],
+  ["Tarifa promedio", "Average rate"],
+  ["Resumen de transportistas", "Carrier summary"],
+  ["MC numero", "MC number"],
+  ["OTP validado %", "OTP validated %"],
+  ["Verificacion y onboarding", "Verification and onboarding"],
+  ["Rendimiento de OTP validado", "Validated OTP performance"],
+  ["Precio aceptado medio", "Average accepted price"],
+  ["Referencia realista de cierre para lanes similares.", "Realistic closing reference for similar lanes."],
+  ["Contraoferta mas repetida", "Most repeated counteroffer"],
+  ["Mejor cliente", "Best client"],
+  ["Cliente con riesgo", "At-risk client"],
+  ["Revenue recuperable", "Recoverable revenue"],
+  ["Riesgo OTP", "OTP risk"],
+  ["Ranking senior de agentes", "Senior agent ranking"],
+  ["Playbook recomendado", "Recommended playbook"],
+  ["Clientes", "Clients"],
+  ["Operaciones", "Operations"],
+  ["Siguiente accion", "Next action"],
+  ["Aceptado", "Accepted"],
+  ["Pendiente", "Pending"],
+  ["Contraoferta", "Counteroffer"],
+  ["Rechazado", "Rejected"],
+  ["Handoff", "Handoff"],
+  ["Nuevo", "New"],
+  ["No interesado", "Not interested"],
+  ["Aceptada", "Accepted"],
+  ["Cancelada", "Canceled"],
+  ["Activo", "Active"],
+  ["En revisión", "Under review"],
+  ["registros", "records"],
+  ["cargas", "loads"],
+  ["Sin datos", "No data"],
+  ["Sin llamadas para los filtros actuales.", "No calls for the current filters."],
+  ["Sin resultados para los filtros actuales.", "No results for the current filters."],
+  ["Pasa el cursor sobre un resultado", "Hover over a result"],
+  ["Pasa el cursor sobre una ciudad", "Hover over a city"],
+  ["Resultado operativo registrado.", "Operational outcome recorded."],
+  ["Datos actualizados desde el Excel sintetico.", "Data refreshed from the synthetic Excel file."],
+  ["Filtros limpiados.", "Filters cleared."],
+  ["Vista lista para conectar en la siguiente fase.", "View ready to connect in the next phase."],
+  ["Exportacion CSV generada.", "CSV export generated."],
+  ["Carga Valencia-Madrid aceptada tras contraoferta de 1.000 euros y handoff creado para confirmacion final.", "Valencia-Madrid load accepted after a EUR 1,000 counteroffer, with handoff created for final confirmation."],
+  ["Transportista verificado por OTP; queda pendiente confirmar disponibilidad y tarifa final.", "Carrier verified by OTP; availability and final rate still need confirmation."],
+  ["Transportista propone una contraoferta y queda abierta la negociacion con operaciones.", "Carrier proposes a counteroffer and the negotiation remains open with operations."],
+  ["La tarifa publicada no encaja y el transportista rechaza continuar con la reserva.", "The posted rate does not work and the carrier declines to continue with the booking."],
+  ["Reserva tentativa creada; requiere seguimiento de un senior rep para cerrar la confirmacion.", "Tentative booking created; requires senior rep follow-up to close confirmation."],
+  ["No se completa la validacion OTP y la llamada queda bloqueada por verificacion.", "OTP validation is not completed and the call remains blocked by verification."],
+  ["Hola. Para poder ayudarte a buscar cargas disponibles, me puedes indicar tu numero MC?", "Hi. To help you find available loads, can you share your MC number?"],
+  ["Por supuesto, es", "Sure, it is"],
+  ["Autoridad verificada para el numero MC proporcionado.", "Authority verified for the provided MC number."],
+  ["Codigo OTP enviado por SMS para continuar con la verificacion.", "OTP code sent by SMS to continue verification."],
+  ["Perfecto, te acabo de enviar un codigo OTP por SMS. Me puedes decir el codigo recibido?", "Perfect, I just sent you an OTP code by SMS. Can you tell me the code you received?"],
+  ["No lo encuentro ahora mismo, creo que no me ha llegado.", "I cannot find it right now; I do not think it came through."],
+  ["Por supuesto, es 123456.", "Sure, it is 123456."],
+  ["El flujo queda bloqueado por verificacion incompleta.", "The flow remains blocked because verification is incomplete."],
+  ["Codigo verificado correctamente.", "Code verified successfully."],
+  ["Desde que provincia quieres cargar, hacia donde te gustaria ir y que tipo de equipo llevas?", "Where do you want to pick up, where would you like to go, and what equipment type do you have?"],
+  ["Voy de Valencia a Madrid y tengo una caja seca.", "I am going from Valencia to Madrid and I have a Dry van."],
+  ["Carga disponible encontrada para Valencia-Madrid con caja seca.", "Available Valencia-Madrid load found for Dry van."],
+  ["Tengo una carga disponible de Valencia a Madrid para el 1 de julio. La tarifa publicada es de 1.250 euros. Te encaja o quieres hacer una contraoferta?", "I have an available Valencia to Madrid load for July 1. The posted rate is EUR 1,250. Does that work, or would you like to make a counteroffer?"],
+  ["No, por esa tarifa no me encaja.", "No, that rate does not work for me."],
+  ["Me vendria mejor unos 1.000 euros.", "EUR 1,000 would work better for me."],
+  ["El transportista rechaza la carga por tarifa.", "The carrier rejects the load because of the rate."],
+  ["Contraoferta aceptada y reserva tentativa preparada.", "Counteroffer accepted and tentative booking prepared."],
+  ["Reserva tentativa creada y handoff simulado realizado.", "Tentative booking created and simulated handoff completed."],
+  ["No se crea handoff final para este resultado.", "No final handoff is created for this outcome."],
+  ["No he podido completar la validacion OTP. Vamos a dejar la llamada pendiente para reintentar la verificacion.", "I could not complete OTP validation. We will leave the call pending so verification can be retried."],
+  ["Entiendo, dejamos esta carga descartada por tarifa. Gracias por tu tiempo.", "Understood, we will mark this load as declined because of the rate. Thank you for your time."],
+  ["La carga queda reservada de forma tentativa por 1.000 euros. Un companero del equipo de ventas contactara para completar la confirmacion final.", "The load is tentatively booked for EUR 1,000. A sales teammate will reach out to complete the final confirmation."],
+  ["Reproduccion de audio", "Audio playback"],
+  ["Para esta demo de Sergio Passalacqua, no esta disponible la reproduccion de audio.", "Audio playback is not available for this Sergio Passalacqua demo."],
+  ["Entendido", "Got it"],
+  ["Transcripcion de llamada", "Call transcript"],
+  ["Detalle", "Details"],
+  ["Resumen", "Summary"],
+  ["Inicio", "Start"],
+  ["User joined call", "User joined call"],
+  ["Hola, buenas.", "Hi there."],
+  ["Transportista", "Carrier"],
+  ["HappyRobot", "HappyRobot"],
+  ["Verificacion", "Verification"],
+  ["Respuesta de autoridad", "Authority response"],
+  ["OTP", "OTP"],
+  ["Respuesta OTP", "OTP response"],
+  ["Validacion OTP", "OTP validation"],
+  ["Estado de verificacion", "Verification status"],
+  ["Busqueda de cargas", "Load search"],
+  ["Carga sugerida", "Suggested load"],
+  ["Decision comercial", "Commercial decision"],
+  ["Resultado operativo", "Operational outcome"],
+  ["Lead de seguimiento", "Follow-up lead"],
+  ["Agente asignado", "Assigned agent"],
+  ["Prioridad", "Priority"],
+  ["Alta", "High"],
+  ["Media", "Medium"],
+  ["Ultima llamada", "Last call"],
+  ["Referencia", "Reference"],
+  ["Ver transcripcion", "View transcript"],
+  ["Reproducir audio", "Play audio"],
+  ["Email", "Email"],
+  ["Seguimiento", "Follow-up"],
+  ["Ranking", "Ranking"],
+  ["OTP validado", "OTP validated"],
+  ["Normal", "Normal"],
+  ["Revisar verificacion", "Review verification"],
+  ["Documentos en evaluacion", "Documents under review"],
+  ["Invitados sin iniciar", "Invites not started"],
+  ["Invitaciones en proceso", "Invitations in progress"],
+  ["Completados", "Completed"],
+  ["Duracion media de llamadas que terminan aceptadas o en handoff.", "Average duration for calls that end accepted or in handoff."],
+  ["Cierre aceptado/handoff", "Accepted/handoff close"],
+  ["Validacion o continuidad", "Validation or continuity"],
+  ["Seguimiento comercial", "Commercial follow-up"],
+  ["Perdidas o bloqueadas", "Lost or blocked"],
+  ["Pendientes para rellamada", "Pending callbacks"],
+  ["Contraofertas que revisar", "Counteroffers to review"],
+  ["OTP fallidos para reintento", "Failed OTPs to retry"],
+  ["Rellamar pendientes", "Call back pending"],
+  ["Cerrar contraofertas", "Close counteroffers"],
+  ["Reintentar OTP", "Retry OTP"],
+  ["Escalar handoffs", "Escalate handoffs"],
+  ["Llamada entrante", "Inbound call"],
+  ["Confirmacion creada", "Confirmation created"],
+  ["Contacto conectado", "Contact connected"],
+  ["Llamada saliente", "Outbound call"],
+  ["Campaña iniciada", "Campaign started"],
+  ["Nuevo lead agregado", "New lead added"],
+  ["Llamada completada", "Call completed"],
+  ["Lead actualizado", "Lead updated"],
+  ["Email enviado", "Email sent"],
+  ["Todos los segmentos", "All segments"],
+  ["Lista para cierre", "Ready to close"],
+  ["Requiere confirmacion", "Requires confirmation"],
+  ["Revisar motivo de cancelacion", "Review cancellation reason"],
+  ["Atacar primero llamadas con contraoferta y duracion superior a 2 minutos.", "Prioritize calls with a counteroffer and duration above 2 minutes."],
+  ["Enviar segundo canal OTP por defecto cuando SMS falle o tarde mas de 60s.", "Send a second OTP channel by default when SMS fails or takes more than 60s."],
+  ["Aprobar automaticamente contraofertas entre 950 y 1.050 EUR para lanes con score alto.", "Automatically approve counteroffers between EUR 950 and EUR 1,050 for high-score lanes."],
+  ["Reintentar OTP por email si SMS falla y no esperar al siguiente contacto.", "Retry OTP by email if SMS fails instead of waiting for the next contact."],
+  ["Priorizar llamadas con estado Pendiente antes de nuevas prospecciones.", "Prioritize calls in Pending status before new prospecting."],
+  ["Usar este precio como ancla inicial y permitir margen hasta 1.050 EUR si hay urgencia.", "Use this price as the starting anchor and allow margin up to EUR 1,050 when urgent."],
+  ["Preparar aprobacion rapida para ofertas en la banda 950-1.050 EUR.", "Prepare fast approval for offers in the EUR 950-1,050 band."],
+  ["Priorizar cobertura y crear playbook dedicado para sus lanes.", "Prioritize coverage and create a dedicated playbook for its lanes."],
+  ["Revisar motivo operativo, precio y calidad de handoff antes de seguir escalando.", "Review operational reason, price, and handoff quality before escalating further."],
+  ["Valor estimado en pendientes + contraofertas abiertas.", "Estimated value in pending calls plus open counteroffers."],
+  ["Friccion de verificacion que impide llegar a pricing.", "Verification friction that prevents reaching pricing."],
+  ["Contactar hoy y resolver el bloqueo antes de perder la oportunidad.", "Contact today and resolve the blocker before losing the opportunity."],
+  ["Mantener en seguimiento y confirmar disponibilidad para la siguiente carga compatible.", "Keep in follow-up and confirm availability for the next compatible load."],
+  ["Revisar el ultimo contacto y priorizar seguimiento si el lead esta en seguimiento o nuevo.", "Review the last contact and prioritize follow-up if the lead is in follow-up or new."],
+]);
+
+const exactSpanish = new Map([
+  ["Operations", "Operaciones"],
+  ["Calls", "Llamadas"],
+  ["Loads", "Cargas"],
+  ["Carriers", "Transportistas"],
+  ["Operations Manager", "Gerente de Operaciones"],
+  ["Audio playback", "Reproduccion de audio"],
+  ["Audio playback is not available for this Sergio Passalacqua demo.", "Para esta demo de Sergio Passalacqua, no esta disponible la reproduccion de audio."],
+  ["Got it", "Entendido"],
+  ["Call transcript", "Transcripcion de llamada"],
+  ["Details", "Detalle"],
+  ["Close", "Cerrar"],
+  ["Main navigation", "Navegacion principal"],
+  ["Switch to English", "Cambiar a ingles"],
+  ["Switch to Spanish", "Cambiar a español"],
+  ["Language selector", "Selector de idioma"],
+  ["Updated: 5 min ago", "Actualizado: hace 5 min"],
+  ["Clear", "Limpiar"],
+  ["View", "Ver"],
+  ["View all", "Ver todas"],
+  ["Play call", "Reproducir llamada"],
+]);
+
+exactEnglish.forEach((english, spanish) => {
+  if (!exactSpanish.has(english)) exactSpanish.set(english, spanish);
+});
+
+const regexEnglish = [
+  [/^(\d+) llamadas filtradas$/, "$1 filtered calls"],
+  [/^(\d+) llamadas$/, "$1 calls"],
+  [/^(\d+) clientes$/, "$1 clients"],
+  [/^Foco: todo$/, "Focus: all"],
+  [/^Foco: (.+)$/, "Focus: $1"],
+  [/^(\d+)% del total$/, "$1% of total"],
+  [/^(\d+) conversaciones aun pueden convertirse si se atacan hoy\.$/, "$1 conversations can still convert if handled today."],
+  [/^(\d+) llamadas bloqueadas o perdidas por rechazo\/OTP\.$/, "$1 calls blocked or lost due to rejection/OTP."],
+  [/^(\d+) cierres sobre (\d+) conversaciones con decision economica\.$/, "$1 closes across $2 conversations with a pricing decision."],
+  [/^(\d+) cierres en (\d+) llamadas filtradas\.$/, "$1 closes in $2 filtered calls."],
+  [/^(\d+) llamadas muestran riesgo de demora o seguimiento\.$/, "$1 calls show delay or follow-up risk."],
+  [/^(\d+) contraofertas convergen alrededor de este punto\.$/, "$1 counteroffers converge around this point."],
+  [/^(.+) cargas\/mes · score (\d+)\.$/, "$1 loads/month · score $2."],
+  [/^Score (\d+) y estado (.+)\.$/, "Score $1 and status $2."],
+  [/^(.+) con seguimiento senior diario y alerta si cae el score\.$/, "Protect $1 with daily senior follow-up and an alert if the score drops."],
+  [/^Carga en estado (.+) con (.+) cargas mensuales desde (.+) y score comercial (.+)\.$/, "Load in $1 status with $2 monthly loads from $3 and commercial score $4."],
+  [/^(.+) acumula (\d+) cargas cerradas con tarifa media de (.+) USD\.$/, "$1 has $2 closed loads with an average rate of USD $3."],
+  [/^Por supuesto, es (\d+)\.$/, "Sure, it is $1."],
+  [/^(\d+)% cierre$/, "$1% close"],
+  [/^(.+) cierre$/, "$1 close"],
+  [/^(\d+)% del total filtrado$/, "$1% of filtered total"],
+  [/^Hace (\d+) min$/, "$1 min ago"],
+  [/^Hace (\d+) h$/, "$1h ago"],
+  [/^(.+): resultado confirmado$/, "$1: result confirmed"],
+  [/^(.+): resultado rechazado$/, "$1: result rejected"],
+  [/^Transcripcion · (.+)$/, "Transcript · $1"],
+  [/^Llamada · (.+)$/, "Call · $1"],
+  [/^Lead de seguimiento · (.+)$/, "Follow-up lead · $1"],
+  [/^Carga · (.+)$/, "Load · $1"],
+  [/^Transportista · (.+)$/, "Carrier · $1"],
+  [/^Lead · (.+)$/, "Lead · $1"],
+  [/^(\d+) · (\d+)%$/, "$1 · $2%"],
+];
+
+const regexSpanish = [
+  [/^(\d+) filtered calls$/, "$1 llamadas filtradas"],
+  [/^(\d+) calls$/, "$1 llamadas"],
+  [/^(\d+) clients$/, "$1 clientes"],
+  [/^Focus: all$/, "Foco: todo"],
+  [/^Focus: (.+)$/, "Foco: $1"],
+  [/^(\d+)% of total$/, "$1% del total"],
+  [/^(\d+) min ago$/, "Hace $1 min"],
+  [/^(\d+)h ago$/, "Hace $1 h"],
+  [/^(.+): result confirmed$/, "$1: resultado confirmado"],
+  [/^(.+): result rejected$/, "$1: resultado rechazado"],
+  [/^Transcript · (.+)$/, "Transcripcion · $1"],
+  [/^Call · (.+)$/, "Llamada · $1"],
+  [/^Follow-up lead · (.+)$/, "Lead de seguimiento · $1"],
+  [/^Load · (.+)$/, "Carga · $1"],
+  [/^Carrier · (.+)$/, "Transportista · $1"],
+];
+
+function translateCore(text) {
+  const exact = state.language === "en" ? exactEnglish : exactSpanish;
+  const regexes = state.language === "en" ? regexEnglish : regexSpanish;
+  if (exact.has(text)) return exact.get(text);
+  for (const [pattern, replacement] of regexes) {
+    if (pattern.test(text)) return text.replace(pattern, replacement);
+  }
+  if (state.language === "en") {
+    return text
+      .replaceAll("ultimos 7 dias", "last 7 days")
+      .replaceAll("con reserva tentativa", "with tentative booking")
+      .replaceAll("requieren seguimiento", "require follow-up")
+      .replaceAll("click para ver todos", "click to view all")
+      .replaceAll("click para filtrar", "click to filter")
+      .replaceAll("vs. semana pasada", "vs. last week")
+      .replaceAll("vs. mes anterior", "vs. previous month")
+      .replaceAll("del total", "of total")
+      .replaceAll("caja seca", "Dry van")
+      .replaceAll("Caja seca", "Dry van")
+      .replaceAll("numero", "number")
+      .replaceAll("Numero", "Number");
+  }
+  return text
+    .replaceAll("last 7 days", "ultimos 7 dias")
+    .replaceAll("with tentative booking", "con reserva tentativa")
+    .replaceAll("require follow-up", "requieren seguimiento")
+    .replaceAll("click to view all", "click para ver todos")
+    .replaceAll("click to filter", "click para filtrar")
+    .replaceAll("vs. last week", "vs. semana pasada")
+    .replaceAll("vs. previous month", "vs. mes anterior")
+    .replaceAll("of total", "del total");
+}
+
+function translateText(value) {
+  const text = String(value);
+  const trimmed = text.trim();
+  if (!trimmed) return text;
+  const leading = text.match(/^\s*/)[0];
+  const trailing = text.match(/\s*$/)[0];
+  return `${leading}${translateCore(trimmed)}${trailing}`;
+}
+
+function translateElement(root = document.body) {
+  const skipTags = new Set(["SCRIPT", "STYLE", "PRE", "CODE"]);
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      const parent = node.parentElement;
+      if (!parent || skipTags.has(parent.tagName) || parent.closest(".language-switcher")) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    },
+  });
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach((node) => {
+    node.nodeValue = translateText(node.nodeValue);
+  });
+  root.querySelectorAll("[placeholder], [aria-label], [title]").forEach((node) => {
+    ["placeholder", "aria-label", "title"].forEach((attr) => {
+      if (node.hasAttribute(attr)) node.setAttribute(attr, translateText(node.getAttribute(attr)));
+    });
+  });
+}
+
+function applyLanguageToDom(root = document.body) {
+  document.documentElement.lang = state.language;
+  document.title = "HappyRobot Logistics | Dashboard";
+  document.querySelectorAll('[data-action="language"]').forEach((button) => {
+    const active = button.dataset.language === state.language;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+  translateElement(root);
+  document.querySelector('[data-language="en"]')?.setAttribute("aria-label", state.language === "es" ? "Cambiar a ingles" : "Switch to English");
+  document.querySelector('[data-language="es"]')?.setAttribute("aria-label", state.language === "es" ? "Cambiar a español" : "Switch to Spanish");
+}
+
+function setLanguage(language) {
+  state.language = language === "es" ? "es" : "en";
+}
+
 function el(selector) {
   return document.querySelector(selector);
 }
@@ -208,9 +630,13 @@ function mmss(seconds) {
 function shortDate(value) {
   const date = new Date(value.replace(" ", "T"));
   const day = date.getDate();
-  const month = ["ene.", "feb.", "mar.", "abr.", "may.", "jun.", "jul.", "ago.", "sep.", "oct.", "nov.", "dic."][date.getMonth()];
+  const monthNames = {
+    en: ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."],
+    es: ["ene.", "feb.", "mar.", "abr.", "may.", "jun.", "jul.", "ago.", "sep.", "oct.", "nov.", "dic."],
+  };
+  const month = monthNames[state.language][date.getMonth()];
   if (value.includes(":")) {
-    return `${day} ${month} 2025, ${date.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}`;
+    return `${day} ${month} 2025, ${date.toLocaleTimeString(state.language === "en" ? "en-US" : "es-ES", { hour: "2-digit", minute: "2-digit" })}`;
   }
   return `${day} ${month}`;
 }
@@ -977,6 +1403,7 @@ function updateResultSegment(segment) {
   }
   document.querySelectorAll('#resultLegend [data-action="resultSegment"]').forEach((chip) => chip.classList.toggle("active", Boolean(state.resultSegment) && chip.dataset.result === state.resultSegment));
   drawDonut(data, "donutChart");
+  applyLanguageToDom();
 }
 
 function showDonutTooltip(item, event, total) {
@@ -989,6 +1416,7 @@ function showDonutTooltip(item, event, total) {
   }
   const pctValue = total ? Math.round((item.value / total) * 100) : 0;
   tooltip.innerHTML = `<strong>${item.label}</strong><span>${item.value} llamadas · ${pctValue}% del total</span><small>${callSummaries[item.label] || "Resultado operativo registrado."}</small>`;
+  applyLanguageToDom(tooltip);
   tooltip.classList.add("show");
   const x = Math.min(window.innerWidth - 260, event.clientX + 16);
   const y = Math.min(window.innerHeight - 120, event.clientY + 16);
@@ -1207,6 +1635,7 @@ function render() {
   if (!renderers[state.page]) state.page = "analitica";
   renderers[state.page]();
   updateNav();
+  applyLanguageToDom();
 }
 
 function rerenderCurrent() {
@@ -1214,6 +1643,7 @@ function rerenderCurrent() {
   if (!renderers[state.page]) state.page = "analitica";
   renderers[state.page]();
   updateNav();
+  applyLanguageToDom();
 }
 
 function updateNav() {
@@ -1222,7 +1652,7 @@ function updateNav() {
 
 function showToast(message) {
   const toast = el("#toast");
-  toast.textContent = message;
+  toast.textContent = translateText(message);
   toast.classList.add("show");
   clearTimeout(showToast.timer);
   showToast.timer = setTimeout(() => toast.classList.remove("show"), 2200);
@@ -1231,6 +1661,7 @@ function showToast(message) {
 function openAudioModal() {
   el("#audioModal").classList.add("show");
   el("#audioModal").setAttribute("aria-hidden", "false");
+  applyLanguageToDom(el("#audioModal"));
 }
 
 function closeAudioModal() {
@@ -1384,6 +1815,7 @@ function openTranscriptModal(index) {
   el("#transcriptBody").innerHTML = formattedTranscript(call, callIndex < 0 ? Number(index) || 0 : callIndex);
   el("#transcriptModal").classList.add("show");
   el("#transcriptModal").setAttribute("aria-hidden", "false");
+  applyLanguageToDom(el("#transcriptModal"));
 }
 
 function closeTranscriptModal() {
@@ -1411,6 +1843,7 @@ function openLeadInfoModal(index) {
     <div class="detail-note"><span>Siguiente accion</span><p>${isUrgent ? "Contactar hoy y resolver el bloqueo antes de perder la oportunidad." : "Mantener en seguimiento y confirmar disponibilidad para la siguiente carga compatible."}</p></div>`;
   el("#detailModal").classList.add("show");
   el("#detailModal").setAttribute("aria-hidden", "false");
+  applyLanguageToDom(el("#detailModal"));
 }
 
 function openDetailModal(type, id) {
@@ -1486,6 +1919,7 @@ function openDetailModal(type, id) {
   el("#detailModalBody").innerHTML = body;
   el("#detailModal").classList.add("show");
   el("#detailModal").setAttribute("aria-hidden", "false");
+  applyLanguageToDom(el("#detailModal"));
 }
 
 function closeDetailModal() {
@@ -1542,6 +1976,11 @@ document.addEventListener("click", (event) => {
     return;
   }
   const action = event.target.closest("[data-action]");
+  if (action?.dataset.action === "language") {
+    setLanguage(action.dataset.language);
+    rerenderCurrent();
+    return;
+  }
   if (action?.dataset.action === "audio") {
     openAudioModal();
     return;
